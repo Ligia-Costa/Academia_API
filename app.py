@@ -120,6 +120,37 @@ def excluir_aluno(id):
     doc_ref.delete()
     return jsonify({'mensagem': 'Aluno excluído com sucesso!'}), 200
 
+# Método GET - Listar treinos inferiores
+@app.route('/inferior/lista', methods=['GET'])
+def listar_inferior():
+    treinos_inferior = []
+    lista = db.collection('inferior').stream()
+    
+    for item in lista:
+        treino = item.to_dict()
+        treino['id'] = item.id
+        treinos_inferior.append(treino)
+
+    if treinos_inferior:
+        return jsonify(treinos_inferior), 200
+    else:
+        return jsonify({'mensagem': 'ERRO! Nenhum treino inferior encontrado.'}), 404
+
+# Método GET - Listar treinos superiores
+@app.route('/superior/lista', methods=['GET'])
+def listar_superior():
+    treinos_superior = []
+    lista = db.collection('superior').stream()
+    
+    for item in lista:
+        treino = item.to_dict()
+        treino['id'] = item.id
+        treinos_superior.append(treino)
+
+    if treinos_superior:
+        return jsonify(treinos_superior), 200
+    else:
+        return jsonify({'mensagem': 'ERRO! Nenhum treino superior encontrado.'}), 404
 
 if __name__ == '__main__':
     app.run(debug=True)
