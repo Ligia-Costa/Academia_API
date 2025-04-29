@@ -173,5 +173,21 @@ def cadastrar_treino(id):
     except Exception as e:
         return jsonify({'mensagem': f'Erro ao cadastrar treino: {str(e)}'}), 500
 
+# Método GET - Listar todos os treinos de um aluno específico
+@app.route('/alunos/<id>/treinos', methods=['GET'])
+def listar_treinos_aluno(id):
+    try:
+        treinos = []
+        treinos_ref = db.collection('alunos').document(id).collection('treinos').stream()
+
+        for treino in treinos_ref:
+            t = treino.to_dict()
+            t['id'] = treino.id
+            treinos.append(t)
+
+        return jsonify(treinos), 200
+    except Exception as e:
+        return jsonify({'mensagem': f'Erro ao buscar treinos: {str(e)}'}), 500
+
 if __name__ == '__main__':
     app.run(debug=True)
